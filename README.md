@@ -1,36 +1,40 @@
-# RivalSMP Plugin
+# RivalSMP 2.0.0
 
-Starter implementation for Paper 1.21.1 / Java 21.
+Paper 1.21.11 plugin, Java 21. Build using GitHub Actions (no local Maven required).
 
-## Build
-1. Install JDK 21 and Maven 3.9+.
-2. Run `mvn clean package`.
-3. Copy `target/RivalSMP-1.0.0.jar` into your server's `plugins` folder.
-4. Restart the server.
+## GitHub build
+1. Extract this ZIP.
+2. Upload the contents of this folder to the repository root (including hidden `.github` folder).
+3. Commit the upload.
+4. Open Actions → Build RivalSMP.
+5. Download `RivalSMP-JAR` from the successful run's Artifacts section.
+6. Put the JAR in the server's `plugins` folder and restart.
 
-Commands:
+## Commands
 - `/rivalsmp help`
 - `/rivalsmp list`
-- `/rivalsmp give <player> <weapon>`
-- `/rivalsmp reload`\n- `/rivalsmp announce <message>` — broadcasts a moving violet-to-cyan gradient in chat and an animated title/subtitle on every online player's screen.
+- `/rivalsmp recipes`
+- `/rivalsmp recipe <weapon>`
+- `/rivalsmp give <player> <weapon>` (admin)
+- `/rivalsmp announce <message>` (admin)
+- `/rivalsmp allies add <player>`
+- `/rivalsmp allies remove <player>`
+- `/rivalsmp allies list`
+- `/rivalsmp ammo <amount>` (admin, sets AutoBow magazine)
+- `/rivalsmp reload` (admin)
 
-Admin permission: `rivalsmp.admin`
+## Ability controls
+- Hold a weapon and press **F** (swap offhand) to activate its special ability.
+- Blood Sword: Heartbreaker targets the nearest visible player within 12 blocks. Soul Feast heals on hit; Battle Instinct grants Strength.
+- DoomsHammer: F dashes; every configured number of player hits activates Thunderfall.
+- Scythe: critical falling hits create lightning; every third hit grants Speed II and Strength II; F activates Catastrophe.
+- KillerKnife: every third hit adds combo damage; attacks from behind add backstab damage; F throws two execution knives.
+- AutoBow: F starts its timed automatic burst; sneaking + right-click fires one magazine arrow. Admin sets magazine with `/rivalsmp ammo <amount>`.
+- CrossBow: F fires three sonic rays.
+- BanHammer: a player kill while holding it bans the defeated player via the server's `ban` command, unless they have the configured protection permission.
 
-## Current implementation status
-Implemented in this source package:
-- Plugin bootstrap, command registration, tab completion and YAML config.
-- Custom weapon identity stored with PersistentDataContainer.
-- Admin weapon give command for all seven weapon IDs.
-- Blood Sword Soul Feast hit healing.
-- Configurable DoomsHammer hit counter and Thunderfall-style lightning/damage trigger.
-- Basic Lifesteal max-health gain/loss on player kills/deaths.\n- Animated gradient announcements to chat and player screens.
+## Crafting
+All seven recipes are registered as shaped 3x3 recipes. `/rivalsmp recipes` lists them and `/rivalsmp recipe <weapon>` prints each pattern. Ingredients are based on the agreed recipe concepts. BanHammer uses Nether Stars, Netherite Blocks, a Netherite Axe and a Wither Skeleton Skull.
 
-Not yet implemented in this starter:
-- Custom ritual structures and persistent ritual progress.
-- Recipe editor / custom crafting GUI.
-- Ally management and friendly-fire protection.
-- Blood Sword Heartbreaker target max-health effect and cooldown.
-- Full Scythe, KillerKnife, AutoBow, CrossBow and BanHammer abilities.
-- SQLite persistence, revive-book flow, resource-pack auto-hosting and GUI menus.
-
-This is deliberately labelled a starter build, not a finished production release. Test on a backup server before using it publicly. The plugin API dependency currently targets Paper 1.21.1; compatibility with 1.21.1–26.1 has NOT been verified. Later Minecraft versions may need a separate build/runtime target.
+## Important implementation notes
+This is a first feature-complete gameplay pass for weapon combat and commands, not a finished implementation of every earlier design idea. Ritual altar structures, GUI recipe editor, revive-book flow, persistent ally/ammo/heart storage, custom 3D resource-pack model integration, and ally immunity for every area effect are not implemented in this build. Verify the Paper 1.21.11 build in GitHub Actions before installing; the artifact is not precompiled here.
