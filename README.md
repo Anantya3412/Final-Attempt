@@ -1,14 +1,24 @@
-# RivalSMP 2.0.0
+# RivalSMP — GitHub Actions source
 
-Paper 1.21.11 plugin, Java 21. Build using GitHub Actions (no local Maven required).
+Paper plugin source targeting Java 21 and Paper API 1.21.11.
 
-## GitHub build
-1. Extract this ZIP.
-2. Upload the contents of this folder to the repository root (including hidden `.github` folder).
-3. Commit the upload.
-4. Open Actions → Build RivalSMP.
-5. Download `RivalSMP-JAR` from the successful run's Artifacts section.
-6. Put the JAR in the server's `plugins` folder and restart.
+## Build without installing Maven
+1. Create/open a GitHub repository.
+2. Upload **all extracted contents** of this ZIP to the repository root. Include the hidden `.github` folder.
+3. Commit/push. Open **Actions → Build RivalSMP**.
+4. When the workflow succeeds, open its run and download the `RivalSMP-JAR` artifact. Put the JAR in your server's `plugins` folder and restart.
+
+## Current included changes
+- Correct base materials: Scythe = Netherite Sword; BanHammer = Mace.
+- Weapon items are unbreakable and receive their configured enchantments.
+- Crafting a custom weapon starts a server-wide timed ritual; one creation per weapon ID is persisted in config.
+- Dropped custom weapons do not despawn and are protected from entity damage; void damage returns the item to world spawn. Players may still drop them.
+- DoomsHammer launch counter: two launches, then 20-second cooldown.
+- DoomsHammer hit counter and Scythe hit effects accept living mobs as well as players; ally players are excluded.
+- AutoBow F activation fires stored arrows automatically. Sneak + left-click with AutoBow opens the ammo GUI; place/shift-click arrows from your inventory to load stored ammo.
+
+## Important limitations to verify before production
+This is a development build, not a guarantee of production-tested behavior. The GitHub Actions compiler is the build verification. The crafting ritual is a timed crafting-result interception (ingredients are consumed when the ritual starts); it is not a physical altar animation. Unique tracking is per weapon type, and `/rivalsmp give` is an administrative bypass intended for testing/recovery. The current implementation does not provide a full recipe editor, full NBT preservation, or a complete resource pack. Test on a backup server first.
 
 ## Commands
 - `/rivalsmp help`
@@ -16,25 +26,17 @@ Paper 1.21.11 plugin, Java 21. Build using GitHub Actions (no local Maven requir
 - `/rivalsmp recipes`
 - `/rivalsmp recipe <weapon>`
 - `/rivalsmp give <player> <weapon>` (admin)
-- `/rivalsmp announce <message>` (admin)
-- `/rivalsmp allies add <player>`
-- `/rivalsmp allies remove <player>`
-- `/rivalsmp allies list`
-- `/rivalsmp ammo <amount>` (admin, sets AutoBow magazine)
+- `/rivalsmp allies <add|remove|list> [player]`
 - `/rivalsmp reload` (admin)
 
-## Ability controls
-- Hold a weapon and press **F** (swap offhand) to activate its special ability.
-- Blood Sword: Heartbreaker targets the nearest visible player within 12 blocks. Soul Feast heals on hit; Battle Instinct grants Strength.
-- DoomsHammer: F dashes; every configured number of player hits activates Thunderfall.
-- Scythe: critical falling hits create lightning; every third hit grants Speed II and Strength II; F activates Catastrophe.
-- KillerKnife: every third hit adds combo damage; attacks from behind add backstab damage; F throws two execution knives.
-- AutoBow: F starts its timed automatic burst; sneaking + right-click fires one magazine arrow. Admin sets magazine with `/rivalsmp ammo <amount>`.
-- CrossBow: F fires three sonic rays.
-- BanHammer: a player kill while holding it bans the defeated player via the server's `ban` command, unless they have the configured protection permission.
+## Ritual timers
+Edit `plugins/RivalSMP/config.yml` under `rituals.<weapon-id>.duration-seconds`, then run `/rivalsmp reload`.
 
-## Crafting
-All seven recipes are registered as shaped 3x3 recipes. `/rivalsmp recipes` lists them and `/rivalsmp recipe <weapon>` prints each pattern. Ingredients are based on the agreed recipe concepts. BanHammer uses Nether Stars, Netherite Blocks, a Netherite Axe and a Wither Skeleton Skull.
 
-## Important implementation notes
-This is a first feature-complete gameplay pass for weapon combat and commands, not a finished implementation of every earlier design idea. Ritual altar structures, GUI recipe editor, revive-book flow, persistent ally/ammo/heart storage, custom 3D resource-pack model integration, and ally immunity for every area effect are not implemented in this build. Verify the Paper 1.21.11 build in GitHub Actions before installing; the artifact is not precompiled here.
+## Latest enchantment updates
+- Blood Sword: Sharpness VI, Sweeping Edge III, Fire Aspect II.
+- AutoBow: Power V, Punch II, Flame I (no Infinity; it uses stored ammo).
+- CrossBow: Quick Charge III, Multishot.
+- All weapons are Unbreakable.
+
+A separate matching resource-pack ZIP is supplied. Install it on the client/server resource-pack distribution and test with the exact Minecraft client version.
